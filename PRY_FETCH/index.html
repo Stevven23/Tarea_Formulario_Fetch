@@ -1,0 +1,205 @@
+<!-- Reemplaza los inputs y botones por formularios y usa fetch para procesar los datos -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Operaciones con Números</title>
+    <link rel="stylesheet" href="./public/lib/bootstrap-5.3.5-dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-dark text-white">
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Operaciones con Números</h1>
+        <hr />
+
+        <div class="d-grid gap-2 mb-4">
+            <button type="button" class="btn btn-success btn-lg" id="btnOpenSuma" data-bs-toggle="modal"
+                data-bs-target="#modalOperaciones">
+                Suma de dos números
+            </button>
+            <button type="button" class="btn btn-primary btn-lg" id="btnOpenTabla" data-bs-toggle="modal"
+                data-bs-target="#modalOperaciones">
+                Tabla de multiplicar
+            </button>
+            <button type="button" class="btn btn-warning btn-lg" id="btnOpenParImpar" data-bs-toggle="modal"
+                data-bs-target="#modalOperaciones">
+                Verificar Par o Impar
+            </button>
+            <button type="button" class="btn btn-info btn-lg" id="btnOpenEdad" data-bs-toggle="modal"
+                data-bs-target="#modalOperaciones">
+                Calcular Edad
+            </button>
+        </div>
+
+        <!-- Modal único -->
+        <div class="modal fade" id="modalOperaciones" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true"
+            data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalLabel">
+                            Operaciones con Números
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Suma -->
+                        <div id="sectionSuma" style="display:none;">
+                            <form id="formSuma">
+                                <label class="form-label">Suma de dos números</label>
+                                <input type="number" class="form-control mb-2" name="num1" placeholder="Primer número"
+                                    required />
+                                <input type="number" class="form-control mb-2" name="num2" placeholder="Segundo número"
+                                    required />
+                                <button type="submit" class="btn btn-success mb-2">Sumar</button>
+                            </form>
+                            <div id="resultadoSuma" class="mb-3"></div>
+                        </div>
+                        <!-- Tabla -->
+                        <div id="sectionTabla" style="display:none;">
+                            <form id="formTabla">
+                                <label class="form-label">Tabla de multiplicar</label>
+                                <input type="number" class="form-control mb-2" name="numTabla"
+                                    placeholder="Ingrese un número" required />
+                                <button type="submit" class="btn btn-primary mb-2">Mostrar tabla</button>
+                            </form>
+                            <div id="resultadoTabla" class="mb-3"></div>
+                        </div>
+                        <!-- Par o impar -->
+                        <div id="sectionParImpar" style="display:none;">
+                            <form id="formParImpar">
+                                <label class="form-label">Verificar Par o Impar</label>
+                                <input type="number" class="form-control mb-2" name="numParImpar"
+                                    placeholder="Ingrese un número" required />
+                                <button type="submit" class="btn btn-warning mb-2">Verificar</button>
+                            </form>
+                            <div id="resultadoParImpar" class="mb-3"></div>
+                        </div>
+                        <!-- Edad -->
+                        <div id="sectionEdad" style="display:none;">
+                            <form id="formEdad">
+                                <label class="form-label">Calcular Edad</label>
+                                <input type="number" class="form-control mb-2" name="anioNacimiento"
+                                    placeholder="Año de nacimiento" required />
+                                <button type="submit" class="btn btn-info mb-2">Calcular Edad</button>
+                            </form>
+                            <div id="resultadoEdad" class="mb-3"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                            class="btn btn-outline text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                            data-bs-dismiss="modal">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./public/lib/bootstrap-5.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+    <script>
+        function showSection(sectionId) {
+            document.getElementById('sectionSuma').style.display = 'none';
+            document.getElementById('sectionTabla').style.display = 'none';
+            document.getElementById('sectionParImpar').style.display = 'none';
+            document.getElementById('sectionEdad').style.display = 'none';
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        document.getElementById('btnOpenSuma').addEventListener('click', () => showSection('sectionSuma'));
+        document.getElementById('btnOpenTabla').addEventListener('click', () => showSection('sectionTabla'));
+        document.getElementById('btnOpenParImpar').addEventListener('click', () => showSection('sectionParImpar'));
+        document.getElementById('btnOpenEdad').addEventListener('click', () => showSection('sectionEdad'));
+
+        // Suma
+        document.getElementById('formSuma').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            formData.append('accion', 'suma');
+            fetch('app/procesar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('resultadoSuma').innerText = data.resultado ?? 'Error en la suma';
+                })
+                .catch(() => {
+                    document.getElementById('resultadoSuma').innerText = 'Error de conexión.';
+                });
+        });
+
+        // Tabla
+        document.getElementById('formTabla').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            formData.append('accion', 'tabla');
+            fetch('app/procesar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (Array.isArray(data.tabla)) {
+                        let html = `<table class="table table-dark table-bordered"><tbody>`;
+                        data.tabla.forEach(row => {
+                            html += `<tr><td>${row.operacion}</td><td>${row.resultado}</td></tr>`;
+                        });
+                        html += `</tbody></table>`;
+                        document.getElementById('resultadoTabla').innerHTML = html;
+                    } else {
+                        document.getElementById('resultadoTabla').innerText = 'Error en la tabla';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('resultadoTabla').innerText = 'Error de conexión.';
+                });
+        });
+
+        // Par o impar
+        document.getElementById('formParImpar').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            formData.append('accion', 'parimpar');
+            fetch('app/procesar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('resultadoParImpar').innerText = data.resultado ?? 'Error';
+                })
+                .catch(() => {
+                    document.getElementById('resultadoParImpar').innerText = 'Error de conexión.';
+                });
+        });
+
+        // Edad
+        document.getElementById('formEdad').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            formData.append('accion', 'edad');
+            fetch('app/procesar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('resultadoEdad').innerText = data.resultado ?? 'Error';
+                })
+                .catch(() => {
+                    document.getElementById('resultadoEdad').innerText = 'Error de conexión.';
+                });
+        });
+    </script>
+
+</body>
+
+</html>
