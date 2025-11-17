@@ -1,0 +1,88 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song</title>
+    <link rel="stylesheet" href="./public/css/style.css">
+    <link rel="stylesheet" href="./public/lib/bootstrap-5.3.5-dist/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="card">
+            <div class="icon"><i class="bi bi-person-badge"></i></div>
+            <h2>Song</h2>
+
+            <!-- Botón modal con <a> -->
+            <a href="#" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addSongModal">
+                Add Song
+            </a>   
+        </div>
+
+
+
+    <div class="modal fade" id="addSongModal" tabindex="-1" aria-labelledby="addSongModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="addSongModalLabel">Add Song</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="create-song">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Type:</label>
+                            <input type="text" id="type" name="type" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="artist" class="form-label">Artist:</label>
+                            <input type="text" id="artist" name="artist" class="form-control" required>
+                        </div>
+
+                        <button type="submit" class="btn-warining">Add Song</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="./public/lib/bootstrap-5.3.5-dist/js/bootstrap.min.js"></script>
+
+    <script>
+        const addSong = document.getElementById('create-song');
+        addSong.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(addSong);
+            fetch('./app/addSong.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                Swal.fire('Nice', data, 'success');
+                addSong.reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addSongModal'));
+                modal.hide();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'to ', 'error');
+            });
+        });
+    </script>
+
+    <script src="./public/lib/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>
